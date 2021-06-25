@@ -8,3 +8,6 @@
 如何进行拍卖？
 如何确定交易？
 ### 实现路径
+#### ipfs api 可以通过 infura 进行实现
+https://infura.io/product/ipfs
+如果是自己启动 ipfs讲点的话有点麻烦，通过 infura，可以方便的进行存储，缺点是依赖于中心话的 infura，优点是把一些杂乱的工作交给了别人
