@@ -36,6 +36,10 @@
 > 	交易则返程给创作者
 
 ### 实现路径
+#### 从 eth 的 eip-721 实现学习实现逻辑，然后翻译到 move
+
+https://eips.ethereum.org/EIPS/eip-721
+
 #### ipfs api 可以通过 infura 进行实现
 
 https://infura.io/product/ipfs
@@ -52,3 +56,10 @@ https://infura.io/product/ipfs
 > https://github.com/ssteiger/Ethereum-NFT-Store-with-Dutch-Auctions
 
 一个以太坊 nft，荷兰拍卖的例子
+
+### 与艺术家的合作
+光有平台（工具）是不够的，关键是能够为社会提供什么价值。可以尝试与艺术家进行合作，这个工具可以提供的：
+1. 公平的市场
+2. 可靠的版权
+3. 给艺术家带去曝光与流量
+4. 可以为艺术家提供接触区块链、nft的场景，作为他们的实验场所
