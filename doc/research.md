@@ -44,7 +44,7 @@ https://eips.ethereum.org/EIPS/eip-721
 
 https://infura.io/product/ipfs
 
-如果是自己启动 ipfs讲点的话有点麻烦，通过 infura，可以方便的进行存储，缺点是依赖于中心话的 infura，优点是把一些杂乱的工作交给了别人
+如果是自己启动 ipfs节点的话有点麻烦，通过 infura，可以方便的进行存储，缺点是依赖于中心话的 infura，优点是把一些杂乱的工作交给了别人
 
 #### 前端与 starcoin 链（合约）的交互可以通过 starcoin sdk(npm) 实现
 
