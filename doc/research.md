@@ -39,6 +39,7 @@
 #### 从 eth 的 eip-721 实现学习实现逻辑，然后翻译到 move
 
 https://eips.ethereum.org/EIPS/eip-721
+https://github.com/leohio/LibraNFT/blob/master/erc721.mvir
 
 #### ipfs api 可以通过 infura 进行实现
 
