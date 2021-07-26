@@ -51,6 +51,9 @@ https://infura.io/product/ipfs
 
 前端需要获得钱包的授权，前端的函数调用钱包（starmask)
 
+#### starcoin 上 dapp，与 metaMask 交互的来虫子
+https://starmask-test-dapp.starcoin.org/
+
 ### nft 荷兰式拍卖
 什么是荷兰式拍卖？我们了解的大多数拍卖都属于英格兰式拍卖，也叫增价拍卖，竞买人不断出高价。荷兰式拍卖式拍卖人给定一个起始价格，然后以一定降幅报价，直至有人应价，一般会有一个保留价格。
 

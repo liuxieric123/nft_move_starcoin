@@ -1,4 +1,4 @@
-address 0x4 {
+address 0x4d72f898d7997e38b681b380a8c4c074 {
 	module NFT_MODULE {
 		use 0x1::Signer;
 		use 0x1::Vector;
@@ -28,7 +28,7 @@ address 0x4 {
 			data: vector<NFT>
 		}
 
-		struct NFT_INFO {
+		struct NFT_INFO has drop {
 			id: u8,
 			next_nft_id: u8,
 			next_nft_owner: address,
@@ -36,10 +36,33 @@ address 0x4 {
 			price: u128,
 		}
 
-		public fun mint(account: signer, num: u8, amount: u128, head: address, min_price: u128): NFT_INFO acquires UniqList{
-			assert(num > NFT_NUM, 1);
-			assert(amount < min_price, 1);
-			let nFT_MARKET_HODL: address = @0x4;
+		struct MARKET has key {
+			head: address,
+			cur_num: u8,
+			min_price: u128
+			market_nft_info: vector<NFT_INFO>
+		}
+
+		public(script) fun init_market(account: signer) {
+			let nFT_MARKET_HODL: address = @0x4d72f898d7997e38b681b380a8c4c074;
+			let account_address = Signer::address_of(&account);
+			assert(nFT_MARKET_HODL == account_address, 1);
+			let market_info = MARKET {
+				head: @0x0,
+				cur_num: 1,
+				min_price: 288000000000u128,
+				market_nft_info: Vector::empty<NFT_INFO>()
+			};
+			move_to<MARKET>(&account, market_info);
+		}
+
+		public(script) fun mint(account: signer, amount: u128) acquires UniqList, MARKET{
+			let nFT_MARKET_HODL: address = @0x4d72f898d7997e38b681b380a8c4c074;
+			let num = borrow_global<MARKET>(nFT_MARKET_HODL).cur_num;
+			let min_price = borrow_global<MARKET>(nFT_MARKET_HODL).min_price;
+			let head = borrow_global<MARKET>(nFT_MARKET_HODL).head;
+			assert(num <= NFT_NUM, 1);
+			assert(amount >= min_price, 1);
 			// get signer's address
 			let account_address = Signer::address_of(&account);
 			// create art piece
@@ -49,7 +72,7 @@ address 0x4 {
 			let art_piece_copy = copy art_piece;
 			let nft = NFT {
 				id: num,
-				next_nft_id: num+1,
+				next_nft_id: num-1,
 				next_nft_owner: head,
 				data: art_piece_copy,
 				sell_status: false,
@@ -70,7 +93,10 @@ address 0x4 {
 			let owner_uniqList = move_from<UniqList>(account_address);
 			Vector::push_back<NFT>(&mut owner_uniqList.data, nft);
 			move_to<UniqList>(&account, owner_uniqList);
-			back_info
+			let market_detail = borrow_global_mut<MARKET>(nFT_MARKET_HODL);
+			Vector::push_back<NFT_INFO>(market_detail, back_info);
+			market_detail.head = account_address;
+			market_detail.cur_num = num + 1;
 		}
 
 		// public fun transfer(account: &signer, nft_id: u8, amount: u128): NFT {
@@ -149,71 +175,71 @@ address 0x4 {
 			Art {prob_a: prob_a, prob_b: prob_b, param_1: param_1_list, param_2: param_2_list}
 		}
 
-		public fun get_nft_list(head: address, cur_num: u8, start: u8, end: u8): vector<NFT_INFO> acquires UniqList {
-			let nft_info_vector = Vector::empty<NFT_INFO>();
-			if (cur_num < start || start > end) {
-				abort 1
-			};
-			while (true) {
-				// find end position's nft first
-				while (cur_num > end) {
-					let owner_uniqList = borrow_global<UniqList>(head);
-					let length = Vector::length<NFT>(&owner_uniqList.data);
-					let i:u64 = 0;
-					while (i < length) {
-						if (cur_num == Vector::borrow<NFT>(&owner_uniqList.data, i).id) {
-							head = Vector::borrow<NFT>(&owner_uniqList.data, i).next_nft_owner;
-							cur_num = cur_num - 1;
-							break
-						} else {
-							i = i + 1;
-							continue
-						}
-					};
-				};
-				while (cur_num >= start) {
-					let owner_uniqList = borrow_global<UniqList>(head);
-					let length = Vector::length<NFT>(&owner_uniqList.data);
-					let i:u64 = 0;
-					while (i < length) {
-						if (cur_num == Vector::borrow<NFT>(&owner_uniqList.data, i).id) {
-							head = Vector::borrow<NFT>(&owner_uniqList.data, i).next_nft_owner;
-							cur_num = cur_num - 1;
-							let nft_info = nft_to_info(Vector::borrow<NFT>(&owner_uniqList.data, i));
-							Vector::push_back<NFT_INFO>(&mut nft_info_vector, nft_info);
-							break
-						} else {
-							i = i + 1;
-							continue
-						}
-					};
-				};
-			};
-			nft_info_vector
-		}
+	// 	fun get_nft_list(head: address, cur_num: u8, start: u8, end: u8): vector<NFT_INFO> acquires UniqList {
+	// 		let nft_info_vector = Vector::empty<NFT_INFO>();
+	// 		if (cur_num < start || start > end) {
+	// 			abort 1
+	// 		};
+	// 		while (true) {
+	// 			// find end position's nft first
+	// 			while (cur_num > end) {
+	// 				let owner_uniqList = borrow_global<UniqList>(head);
+	// 				let length = Vector::length<NFT>(&owner_uniqList.data);
+	// 				let i:u64 = 0;
+	// 				while (i < length) {
+	// 					if (cur_num == Vector::borrow<NFT>(&owner_uniqList.data, i).id) {
+	// 						head = Vector::borrow<NFT>(&owner_uniqList.data, i).next_nft_owner;
+	// 						cur_num = cur_num - 1;
+	// 						break
+	// 					} else {
+	// 						i = i + 1;
+	// 						continue
+	// 					}
+	// 				};
+	// 			};
+	// 			while (cur_num >= start && cur_num > 0) {
+	// 				let owner_uniqList = borrow_global<UniqList>(head);
+	// 				let length = Vector::length<NFT>(&owner_uniqList.data);
+	// 				let i:u64 = 0;
+	// 				while (i < length) {
+	// 					if (cur_num == Vector::borrow<NFT>(&owner_uniqList.data, i).id) {
+	// 						head = Vector::borrow<NFT>(&owner_uniqList.data, i).next_nft_owner;
+	// 						cur_num = cur_num - 1;
+	// 						let nft_info = nft_to_info(Vector::borrow<NFT>(&owner_uniqList.data, i));
+	// 						Vector::push_back<NFT_INFO>(&mut nft_info_vector, nft_info);
+	// 						break
+	// 					} else {
+	// 						i = i + 1;
+	// 						continue
+	// 					}
+	// 				};
+	// 			};
+	// 		};
+	// 		nft_info_vector
+	// 	}
 		
-		public fun get_owner_nft_list(account: address): vector<NFT_INFO> acquires UniqList {
-			let owner_uniqList = borrow_global<UniqList>(account);
-			let length = Vector::length<NFT>(&owner_uniqList.data);
-			let i:u64 = 0;
-			let nft_info_vector = Vector::empty<NFT_INFO>();
-			while (i < length) {
-				let nft_info = nft_to_info(Vector::borrow<NFT>(&owner_uniqList.data, i));
-				Vector::push_back<NFT_INFO>(&mut nft_info_vector, nft_info);
-				i = i + 1;	
-			};
-			nft_info_vector
-		}
+	// 	public(script) fun get_owner_nft_list(account: address): vector<NFT_INFO> acquires UniqList {
+	// 		let owner_uniqList = borrow_global<UniqList>(account);
+	// 		let length = Vector::length<NFT>(&owner_uniqList.data);
+	// 		let i:u64 = 0;
+	// 		let nft_info_vector = Vector::empty<NFT_INFO>();
+	// 		while (i < length) {
+	// 			let nft_info = nft_to_info(Vector::borrow<NFT>(&owner_uniqList.data, i));
+	// 			Vector::push_back<NFT_INFO>(&mut nft_info_vector, nft_info);
+	// 			i = i + 1;	
+	// 		};
+	// 		nft_info_vector
+	// 	}
 		
-		fun nft_to_info(nft: &NFT): NFT_INFO {
-			let art_piece = *&nft.data;
-			NFT_INFO {
-				id: nft.id,
-				next_nft_id: nft.next_nft_id,
-				next_nft_owner: nft.next_nft_owner,
-				data: art_piece,
-				price: nft.price
-			}
-		}
-	}
+	// 	fun nft_to_info(nft: &NFT): NFT_INFO {
+	// 		let art_piece = *&nft.data;
+	// 		NFT_INFO {
+	// 			id: nft.id,
+	// 			next_nft_id: nft.next_nft_id,
+	// 			next_nft_owner: nft.next_nft_owner,
+	// 			data: art_piece,
+	// 			price: nft.price
+	// 		}
+	// 	}
+	// }
 }

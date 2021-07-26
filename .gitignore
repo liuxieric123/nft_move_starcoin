@@ -1,0 +1,9 @@
+*build
+dev/modules/storage/
+grainshade_images/
+stc-dev/
+storage/
+test.move
+weave_images.zip
+weave_images/
+p5ycho/

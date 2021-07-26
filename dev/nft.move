@@ -80,3 +80,65 @@ module NFTExample4 {
     }
 }
 }
+
+module Auction {
+    use 0x1::Errors;
+    use 0x1::Libra::Libra;
+    use 0x1::LibraAccount;
+    use 0x1::Signer;
+
+    // Published under the auctioneer's account
+    // ToSell is the type of the value to be auctioned.
+    // It can be defined in another module (e.g., NonFungibleToken.move)
+    // Currency is the type of coin the beneficiary would like to receive
+    resource struct Auction<ToSell,Currency> {
+        to_sell: ToSell, // the value to be aucitioned
+        beneficiary: address, // address that will receive proceeds from the auction
+        max_bid: u64,
+        // ... fields for min_bid, the end time of the auction, etc.
+    }
+
+    // A bid resource granted to someone who bids `bid` coins for the
+    // resource ToSell being auctioned at auction_addr
+    resource struct Bid<ToSell,Currency> {
+        bid: Libra<Currency>,
+        auction_addr: address
+    }
+
+    const EBID_TOO_SMALL: u64 = 0;
+
+    public fun create<ToSell,Currency>(auctioneer: &signer, beneficiary: address, to_sell: ToSell) {
+        move_to<Auction<ToSell,Currency>>(auctioneer, Auction<ToSell> { to_sell, beneficiary, max_bid: 0 })
+    }
+
+    public fun bid<ToSell,Currency>(
+        bidder: &signer, auction_addr: address, bid: Libra<Currency>
+    ) acquires Auction {
+        let bid_amount = Libra::value(&bid);
+        // retrieve the Auction resource at addr and update the max bid
+        let old_max_bid = borrow_global_mut<Auction<ToSell,Currency>>(auction_addr).max_bid;
+        if bid_amount > old_max_bid {
+            // new max bid; update auction resource and publish the bid under the bidder's account
+            *old_max_bid = bid_amount;
+            move_to(bidder, Bid<ToSell,Currency> { bid, auction_addr });
+        } else {
+            // this bid is not going to win the auction; abort
+            abort(Errors::invalid_state(EBID_TOO_SMALL))
+        }
+    }
+
+    // if this is the winning bid, give the funds to the auctioneer and the ToSell to the bidder
+    public fun redeem_winning_bid<ToSell,Currency>(bidder: &account): ToSell acquires Auction, Bid {
+        let Bid { bid, auction_addr } = move_from<Bid<ToSell,Currency>>(Signer::address_of(bidder));
+        let Auction { to_sell, beneficiary, max_bid } = move_from<Auction<ToSell,Currency>>(auction_addr);
+        // ... we would want to check that the Auction is over here. we'll assume it for simplicity
+        // make sure this is actually the winning bid!
+        assert(Libra::value(&bid) == max_bid, Errors::invalid_state(EBID_TOO_SMALL));
+        // give the beneficiary the funds
+        LibraAccount::deposit(bid, auction_addr);
+
+        to_sell
+    }
+
+    // ... procedures to refund non-winning bids, re-bid, etc.
+}
