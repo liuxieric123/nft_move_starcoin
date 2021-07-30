@@ -98,9 +98,9 @@ address 0x4d72f898d7997e38b681b380a8c4c074 {
 			market_detail.head = account_address;
 			market_detail.cur_num = num + 1;
 			if (num+1 > 10) {
-				market_detail.min_price = 188000000000u128;
+				market_detail.min_price = 388000000000u128;
 			} else if (num+1 > 50) {
-				market_detail.min_price = 588000000000u128;
+				market_detail.min_price = 688000000000u128;
 			} else if (num+1 > 90) {
 				market_detail.min_price = 1088000000000u128;
 			}
@@ -134,31 +134,34 @@ address 0x4d72f898d7997e38b681b380a8c4c074 {
 			Vector::push_back<u64>(&mut param_1_noise_radius, 10);
 			Vector::push_back<u64>(&mut param_1_noise_radius, 30);
 			Vector::push_back<u64>(&mut param_1_noise_radius, 100);
-			Vector::push_back<u64>(&mut param_2_darkness, 5);
-			Vector::push_back<u64>(&mut param_2_darkness, 10);
-			Vector::push_back<u64>(&mut param_2_darkness, 50);
+			Vector::push_back<u64>(&mut param_2_darkness, 75);
 			Vector::push_back<u64>(&mut param_2_darkness, 100);
-			Vector::push_back<u64>(&mut param_2_darkness, 250);
-			Vector::push_back<u64>(&mut param_2_scale, 30);
-			Vector::push_back<u64>(&mut param_2_scale, 150);
-			Vector::push_back<u64>(&mut param_2_scale, 350);
-			Vector::push_back<u64>(&mut param_2_scale, 600);
-			Vector::push_back<u64>(&mut param_2_scale, 1100);
-			Vector::push_back<u64>(&mut param_2_persistence, 1);
+			Vector::push_back<u64>(&mut param_2_darkness, 500);
+			Vector::push_back<u64>(&mut param_2_darkness, 700);
+			Vector::push_back<u64>(&mut param_2_darkness, 1000);
+			Vector::push_back<u64>(&mut param_2_darkness, 1800);
+			Vector::push_back<u64>(&mut param_2_darkness, 2500);
+			Vector::push_back<u64>(&mut param_2_scale, 60);
+			Vector::push_back<u64>(&mut param_2_scale, 190);
+			Vector::push_back<u64>(&mut param_2_scale, 400);
+			Vector::push_back<u64>(&mut param_2_scale, 680);
+			Vector::push_back<u64>(&mut param_2_scale, 800);
 			Vector::push_back<u64>(&mut param_2_persistence, 3);
-			Vector::push_back<u64>(&mut param_2_persistence, 6);
-			Vector::push_back<u64>(&mut param_2_intensity, 1);
-			Vector::push_back<u64>(&mut param_2_intensity, 5);
-			Vector::push_back<u64>(&mut param_2_intensity, 10);
+			Vector::push_back<u64>(&mut param_2_persistence, 4);
+			Vector::push_back<u64>(&mut param_2_persistence, 5);
+			Vector::push_back<u64>(&mut param_2_intensity, 6);
+			Vector::push_back<u64>(&mut param_2_intensity, 13);
+			Vector::push_back<u64>(&mut param_2_intensity, 17);
 			Vector::push_back<u64>(&mut param_2_intensity, 30);
 			let mod_3:u64 = (num as u64) % 3;
 			let mod_4:u64 = (num as u64) % 4;
 			let mod_5:u64 = (num as u64) % 5;
 			let mod_6:u64 = (num as u64) % 6;
+			let mod_7:u64 = (num as u64) % 7;
 			Vector::push_back<u64>(&mut param_1_list, *Vector::borrow<u64>(&param_1_cell_size, mod_6));
 			Vector::push_back<u64>(&mut param_1_list, *Vector::borrow<u64>(&param_1_noise_size, mod_5));
 			Vector::push_back<u64>(&mut param_1_list, *Vector::borrow<u64>(&param_1_noise_radius, mod_4));
-			Vector::push_back<u64>(&mut param_2_list, *Vector::borrow<u64>(&param_2_darkness, mod_5));
+			Vector::push_back<u64>(&mut param_2_list, *Vector::borrow<u64>(&param_2_darkness, mod_7));
 			Vector::push_back<u64>(&mut param_2_list, *Vector::borrow<u64>(&param_2_scale, mod_5));
 			Vector::push_back<u64>(&mut param_2_list, *Vector::borrow<u64>(&param_2_persistence, mod_3));
 			Vector::push_back<u64>(&mut param_2_list, *Vector::borrow<u64>(&param_2_intensity, mod_4));
