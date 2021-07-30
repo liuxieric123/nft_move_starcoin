@@ -1,5 +1,5 @@
-address 0x4d72f898d7997e38b681b380a8c4c074 {
-	module NFT_MODULE {
+address 0x5e3596e11c09fb16790e8310d8e3bff1 {
+	module NFT_MODULES {
 		use 0x1::Signer;
 		use 0x1::Vector;
 		use 0x1::STC::STC;
@@ -44,20 +44,20 @@ address 0x4d72f898d7997e38b681b380a8c4c074 {
 		}
 
 		public(script) fun init_market(account: signer) {
-			let nFT_MARKET_HODL: address = @0x4d72f898d7997e38b681b380a8c4c074;
+			let nFT_MARKET_HODL: address = @0x5e3596e11c09fb16790e8310d8e3bff1;
 			let account_address = Signer::address_of(&account);
 			assert(nFT_MARKET_HODL == account_address, 1);
 			let market_info = MARKET {
 				head: @0x0,
 				cur_num: 1,
-				min_price: 88000000000u128,
+				min_price: 50000000u128,
 				market_nft_info: Vector::empty<NFT_INFO>()
 			};
 			move_to<MARKET>(&account, market_info);
 		}
 
 		public(script) fun mint(account: signer, amount: u128) acquires UniqList, MARKET{
-			let nFT_MARKET_HODL: address = @0x4d72f898d7997e38b681b380a8c4c074;
+			let nFT_MARKET_HODL: address = @0x5e3596e11c09fb16790e8310d8e3bff1;
 			let num = borrow_global<MARKET>(nFT_MARKET_HODL).cur_num;
 			let min_price = borrow_global<MARKET>(nFT_MARKET_HODL).min_price;
 			let head = borrow_global<MARKET>(nFT_MARKET_HODL).head;
@@ -98,11 +98,11 @@ address 0x4d72f898d7997e38b681b380a8c4c074 {
 			market_detail.head = account_address;
 			market_detail.cur_num = num + 1;
 			if (num+1 > 10) {
-				market_detail.min_price = 388000000000u128;
+				market_detail.min_price = 70000000u128;
 			} else if (num+1 > 50) {
-				market_detail.min_price = 688000000000u128;
+				market_detail.min_price = 80000000u128;
 			} else if (num+1 > 90) {
-				market_detail.min_price = 1088000000000u128;
+				market_detail.min_price = 100000000u128;
 			}
 		}
 

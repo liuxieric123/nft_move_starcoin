@@ -8,3 +8,5 @@ weave_images.zip
 weave_images/
 p5ycho/
 starcoin% account export 0x4d72f898d7997
+dev/dapp/front-end/nft_front/node_modules/*
+*.mv
