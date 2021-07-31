@@ -50,7 +50,7 @@ address 0xC137657E5aeD5099592BA07c8ab44CC5 {
 			let market_info = MARKET {
 				head: @0x0,
 				cur_num: 1,
-				min_price: 88000000000u128,
+				min_price: 50000000u128,
 				market_nft_info: Vector::empty<NFT_INFO>()
 			};
 			move_to<MARKET>(&account, market_info);
@@ -98,11 +98,11 @@ address 0xC137657E5aeD5099592BA07c8ab44CC5 {
 			market_detail.head = account_address;
 			market_detail.cur_num = num + 1;
 			if (num+1 > 10) {
-				market_detail.min_price = 388000000000u128;
+				market_detail.min_price = 70000000u128;
 			} else if (num+1 > 50) {
-				market_detail.min_price = 688000000000u128;
+				market_detail.min_price = 80000000u128;
 			} else if (num+1 > 90) {
-				market_detail.min_price = 1088000000000u128;
+				market_detail.min_price = 100000000u128;
 			}
 		}
 

@@ -1,4 +1,5 @@
 *build
+dev/dapp/front-end/nft_front/node_modules/
 dev/modules/storage/
 grainshade_images/
 stc-dev/
@@ -9,3 +10,4 @@ weave_images/
 p5ycho/
 starcoin% account export 0x4d72f898d7997
 *node_modules*
+*.mv
