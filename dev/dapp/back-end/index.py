@@ -14,10 +14,10 @@ CORS(app)
 
 @app.route('/', methods=['GET'])
 def index():
-    return redirect(url_for('static', filename='index.html'))
+    return redirect(url_for('static', filename='/index.html'))
 
 @app.route('/get_nft_market', methods=['GET'])
-@cache.memoize()
+@cache.memoize(timeout=120)
 def get_nft_market():
 	return get_chain_nft_market() 
 
@@ -38,7 +38,7 @@ def get_owner_nft():
 @app.route('/update_cache', methods=['GET'])
 def update_cache():
 	try:
-		cache.delete_memoized(get_nft_image)
+		cache.delete_memoized(get_nft_market)
 		return "updated!", 200
 	except:
 		abort(500)

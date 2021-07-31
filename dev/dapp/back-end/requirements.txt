@@ -1,0 +1,6 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: osx-64
+flask=1.1.20
+flask-caching=1.10.1
+flask_cors=3.0.10

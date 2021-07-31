@@ -3,18 +3,21 @@ function lo(index) {
 	let noise_size_list = [0.001, 0.01, 0.1, 1, 10];
 	let noise_radius_list = [0.01, 0.1, 0.3, 1];
 	let sketch = function(p) {
-		let width = 1200;
-		let height = 1200;
-		let offset = -40;
-		const grid_dim_x = 1200;
-			const grid_dim_y = 1200;
+		let width = 3000;
+		let height = 3000;
+		let offset = -10;
+		const grid_dim_x = 3000;
+			const grid_dim_y = 3000;
 			const padding = 40;
 			const canvas_dim_x = grid_dim_x + 2 * padding;
 			const canvas_dim_y = grid_dim_y + 2 * padding;
 
-		let flow_cell_size = cell_size_list[index % 5];
-		let noise_size = noise_size_list[index % 6];
-		let noise_radius = noise_radius_list[index % 4];
+		// let flow_cell_size = cell_size_list[index % 5];
+		// let noise_size = noise_size_list[index % 6];
+		// let noise_radius = noise_radius_list[index % 4];
+		let flow_cell_size = 15;
+		let noise_size = 0.01;
+		let noise_radius = 0.01;
 		let filename = String(index) + '_' + String(flow_cell_size) + '_' + 
 					   String(noise_size) + '_' + String(noise_radius) + '.jpg';
 		let flow_width = (width + offset * 2) / flow_cell_size;
@@ -179,7 +182,7 @@ function lo(index) {
 }
 
 let start_index = 1;
-let end_index = 11;
+let end_index = 2;
 
 for (let i = start_index; i < end_index; i++) {
 	let s = lo(i);

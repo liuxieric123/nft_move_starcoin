@@ -102,7 +102,15 @@ P(A) 是基于生成艺术与区块链技术结合的实验项目。每个 P(A) 
 P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度随创建的个数增加而增加。价格依次为：88STC，388STC，688STC，1088STC。
 			</p>
 		</div>
-		<div class='mint-button cursor-another' @click="mint">
+		<div class='mint-button cursor-another' v-if="init" @click="mint">
+			<div class="button-img cursor-another">
+				<img class="mint-button-img heartbeat-animation" style="max-width:200px" src="https://nft-1258500098.cos.ap-beijing.myqcloud.com/button.png"/>
+			</div>
+			<div class="button-img">
+				<img class="mint-button-brother-img spin-animation" style="max-width:600px" src="https://nft-1258500098.cos.ap-beijing.myqcloud.com/button%27s%20bro.png"/>
+			</div>
+		</div>
+		<div class='mint-button cursor-another' v-else @click="openmarket">
 			<div class="button-img cursor-another">
 				<img class="mint-button-img heartbeat-animation" style="max-width:200px" src="https://nft-1258500098.cos.ap-beijing.myqcloud.com/button.png"/>
 			</div>
@@ -123,6 +131,9 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 							<hr class="info-hr"/>
 							<div class="info-bottom">
 								<p>OWNER: {{nft_list[position[(i-1)*4+o-1]-1].address}}</p>
+								<div class="owner-dot" v-if="nft_list[position[(i-1)*4+o-1]-1].address == account[0]">
+									<div></div>
+								</div>
 							</div>
 						</div>
 						<div v-else>
@@ -180,7 +191,8 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 				account: [],
 				walletInstalled: false,
 				curPrice: 188,
-				starcoinP: ""
+				starcoinP: "",
+				init: true
 
 			}
 		},
@@ -220,6 +232,7 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 						method: 'stc_requestAccounts',
 					})
 					this.account = newAccounts;
+					console.log(newAccounts)
 					this.isWalletConnected = true;
 					console.log(newAccounts)
 				} catch (error) {
@@ -235,7 +248,7 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 				}
 				console.log(this.curPrice);
 				try {
-					const functionId = '0x4D72F898D7997E38b681B380A8c4C074::NFT_MODULE::mint'
+					const functionId = '0x5E3596E11C09Fb16790E8310D8e3bfF1::NFT_MODULES::mint'
 					const strTypeArgs = []
 					const tyArgs = utils.tx.encodeStructTypeTags(strTypeArgs)
 
@@ -284,6 +297,44 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 					console.log(error)
 					throw error
 				}
+			},
+			openmarket: async function() {
+				if (!this.walletInstalled) {
+					this.installWallet()
+				}
+				if (!this.isWalletConnected) {
+					this.connectWallet();
+				}
+				try {
+					const functionId = '0x5E3596E11C09Fb16790E8310D8e3bfF1::NFT_MODULES::init_market'
+					const strTypeArgs = []
+					const tyArgs = utils.tx.encodeStructTypeTags(strTypeArgs)
+
+					// Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
+					const args = [
+					]
+
+					const scriptFunction = utils.tx.encodeScriptFunction(functionId, tyArgs, args)
+					console.log(scriptFunction)
+
+					// Multiple BcsSerializers should be used in different closures, otherwise, the latter will be contaminated by the former.
+					const payloadInHex = (function () {
+						const se = new bcs.BcsSerializer()
+						scriptFunction.serialize(se)
+						return hexlify(se.getBytes())
+					})()
+					console.log({ payloadInHex })
+
+					const transactionHash = await this.starcoinP.getSigner().sendUncheckedTransaction({
+						data: payloadInHex,
+					})
+					api.updateCache();
+					console.log({ transactionHash })
+
+				} catch (error) {
+					console.log(error)
+					throw error
+				}
 			}
 		},
 		beforeMount: function() {
@@ -296,11 +347,39 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 			} catch (error) {
 				console.error(error)
 			}
+			try {
+				if (isStarMaskInstalled()) {
+					this.walletInstalled = true;
+					window.starcoin.request({
+					method: 'stc_accounts',
+					}).then(res => {
+						if (res.length == 0) {
+							this.isWalletConnected = false;
+						} else {
+							this.account = res;
+							this.isWalletConnected = true;
+						}
+						
+					})
+				} else {
+					this.walletInstalled = false;
+				}
+				
+			} catch (error) {
+				console.error(error)
+			}
 			api.getNFTMarket().then(res => {
+				console.log(res)
+				if (res.length == 0) {
+					this.init = false;
+					return;
+				}
+				console.log(this.init)
 				const imageBaseUrl = 'https://nft-1258500098.cos.ap-beijing.myqcloud.com/'
 				let nft_array = res.market_nft_info;
 				let nft_list_ = [];
 				this.curPrice = res.min_price / 1000000000;
+				console.log(this.curPrice)
 				console.log(res)
 				console.log(nft_array)
 				for (let i = 0; i < nft_array.length; i++) {
@@ -325,27 +404,7 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 					
 				}
 				this.nft_list = nft_list_;
-				try {
-					if (isStarMaskInstalled()) {
-						this.walletInstalled = true;
-						window.starcoin.request({
-						method: 'stc_accounts',
-						}).then(res => {
-							if (res.length == 0) {
-								this.isWalletConnected = false;
-							} else {
-								this.account = res;
-								this.isWalletConnected = true;
-							}
-							
-						})
-					} else {
-						this.walletInstalled = false;
-					}
-					
-				} catch (error) {
-					console.error(error)
-				}
+				
 			})
 			// api.getNFTImage("50", "50").then(res => console.log(res))
 			// api.updateCache().then(res => console.log(res))
@@ -481,6 +540,7 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 		margin-left: 10px;
 		margin-right: 10px;
 	}
+	
 	.info-hr {
 		margin: 0px;
 		margin-left: 10px;
@@ -489,6 +549,22 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 	.info-bottom {
 		text-align: left;
 		margin-left: 10px;
+	}
+	.owner-dot {
+		position: relative;
+		left: 120px;
+		top: -58px;
+		border:12px solid #00ffa1;
+		color:#00ffa1;
+		background-color:#00ffa1;
+		height:20px;
+		width:20px;
+		border-radius: 100%;
+		margin: auto;	
+		opacity: 0.7;
+	}
+	.cls-1 {
+		width: 50px;
 	}
 	.card-dot {
 		position: relative;

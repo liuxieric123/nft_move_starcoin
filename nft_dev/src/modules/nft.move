@@ -1,5 +1,5 @@
-address 0x4d72f898d7997e38b681b380a8c4c074 {
-	module NFT_MODULE {
+address 0xC137657E5aeD5099592BA07c8ab44CC5 {
+	module NFT_MODULES {
 		use 0x1::Signer;
 		use 0x1::Vector;
 		use 0x1::STC::STC;
@@ -44,7 +44,7 @@ address 0x4d72f898d7997e38b681b380a8c4c074 {
 		}
 
 		public(script) fun init_market(account: signer) {
-			let nFT_MARKET_HODL: address = @0x4d72f898d7997e38b681b380a8c4c074;
+			let nFT_MARKET_HODL: address = @0xC137657E5aeD5099592BA07c8ab44CC5;
 			let account_address = Signer::address_of(&account);
 			assert(nFT_MARKET_HODL == account_address, 1);
 			let market_info = MARKET {
@@ -57,7 +57,7 @@ address 0x4d72f898d7997e38b681b380a8c4c074 {
 		}
 
 		public(script) fun mint(account: signer, amount: u128) acquires UniqList, MARKET{
-			let nFT_MARKET_HODL: address = @0x4d72f898d7997e38b681b380a8c4c074;
+			let nFT_MARKET_HODL: address = @0xC137657E5aeD5099592BA07c8ab44CC5;
 			let num = borrow_global<MARKET>(nFT_MARKET_HODL).cur_num;
 			let min_price = borrow_global<MARKET>(nFT_MARKET_HODL).min_price;
 			let head = borrow_global<MARKET>(nFT_MARKET_HODL).head;

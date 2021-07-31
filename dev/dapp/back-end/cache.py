@@ -1,13 +1,15 @@
 import requests
 
-url = "http://localhost:9850"
+# url = "http://localhost:9850"
+url = "https://barnard-seed.starcoin.org"
+# url = "https://main-seed.starcoin.org"
 def get_chain_nft_market():
 
 	payload={
 		"id":101, 
 		"jsonrpc":"2.0", 
 		"method":"state.get_resource", 
-		"params":["0x4d72f898d7997e38b681b380a8c4c074", "0x4d72f898d7997e38b681b380a8c4c074::NFT_MODULE::MARKET", {"decode": True}]
+		"params":["0x5E3596E11C09Fb16790E8310D8e3bfF1", "0x5E3596E11C09Fb16790E8310D8e3bfF1::NFT_MODULES::MARKET", {"decode": True}]
 	}
 
 	headers = {
@@ -23,7 +25,7 @@ def get_owner_nft_info(address):
 		"id":101, 
 		"jsonrpc":"2.0", 
 		"method":"state.get_resource", 
-		"params":[address, "0x4d72f898d7997e38b681b380a8c4c074::NFT_MODULE::UniqList", {"decode": True}]
+		"params":[address, "0x5E3596E11C09Fb16790E8310D8e3bfF1::NFT_MODULES::UniqList", {"decode": True}]
 	}
 
 	headers = {

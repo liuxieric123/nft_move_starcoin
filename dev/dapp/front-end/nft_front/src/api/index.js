@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 
-const baseUrl = 'http://localhost:37799'
+const baseUrl = 'http://192.168.0.248:37799'
 const url = {
     getNFTMarket: baseUrl + '/get_nft_market',
     getOwnerNFT: baseUrl + '/get_owner_nft',
@@ -13,7 +13,12 @@ const instance = axios.create()
 
 const getNFTMarket = () => instance.get(url.getNFTMarket).then(function(response) {
 	if (response.status == 200) {
-		return response.data.result.json
+		try {
+			console.log(response)
+			return response.data.result.json
+		} catch {
+			return []
+		}
 	} else {
 		return []
 	}
