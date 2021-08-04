@@ -11,3 +11,4 @@ p5ycho/
 starcoin% account export 0x4d72f898d7997
 *node_modules*
 *.mv
+*.key
