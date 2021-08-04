@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 
-const baseUrl = 'http://pa.memex.studio'
-// const baseUrl = "http://0.0.0.0:37799"
+// const baseUrl = 'http://pa.memex.studio'
+const baseUrl = "http://0.0.0.0:37799"
 const url = {
     getNFTMarket: baseUrl + '/get_nft_market',
     getOwnerNFT: baseUrl + '/get_owner_nft',

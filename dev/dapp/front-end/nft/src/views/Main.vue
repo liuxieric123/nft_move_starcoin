@@ -257,7 +257,7 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 				}
 				console.log(this.curPrice);
 				try {
-					const functionId = '0xC137657E5aeD5099592BA07c8ab44CC5::NFT_MODULES::mint'
+					const functionId = '0x5E3596E11C09Fb16790E8310D8e3bfF1::NFT_MODULES::mint'
 					const strTypeArgs = []
 					const tyArgs = utils.tx.encodeStructTypeTags(strTypeArgs)
 
@@ -315,7 +315,7 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 					this.connectWallet();
 				}
 				try {
-					const functionId = '0xC137657E5aeD5099592BA07c8ab44CC5::NFT_MODULES::init_market'
+					const functionId = '0x5E3596E11C09Fb16790E8310D8e3bfF1::NFT_MODULES::init_market'
 					const strTypeArgs = []
 					const tyArgs = utils.tx.encodeStructTypeTags(strTypeArgs)
 
@@ -378,7 +378,16 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 				console.error(error)
 			}
 			api.getNFTMarket().then(res => {
-				console.log(res)
+				// console.log(res)
+				let price_list = [0.05, 0.07, 0.09, 0.1]
+				this.curPrice = res.min_price / 1000000000;
+				console.log(this.curPrice)
+				for (let i = 0; i < price_list.length; i++) {
+					if (price_list[i] == this.curPrice) {
+						this.level = i;
+						// console.log(i)
+					}
+				}
 				if (res.length == 0) {
 					this.init = false;
 					return;
@@ -387,16 +396,7 @@ P(A) 项目仅且只会生成 100 组作品,  购买所需的价格按照梯度�
 				const imageBaseUrl = 'https://nft-1258500098.cos.ap-beijing.myqcloud.com/'
 				let nft_array = res.market_nft_info;
 				let nft_list_ = {};
-				let price_list = [0.05, 0.07, 0.09, 0.1]
-				this.curPrice = res.min_price / 1000000000;
-				console.log(this.curPrice)
-				for (let i = 0; i < price_list.length; i++) {
-					if (price_list[i] == this.curPrice) {
-						this.level = i;
-						console.log(i)
-					}
-				}
-				console.log(res)
+				// console.log(res)
 				console.log(nft_array)
 				for (let i = 0; i < nft_array.length; i++) {
 					let item = nft_array[i];
